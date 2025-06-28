@@ -23,13 +23,13 @@ export default function RegisterPage() {
     }
   };
 
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    return (
+    <main className="min-h-screen bg-gradient-to-br from-green-100 via-green-200 to-green-300 flex items-center justify-center px-4">
       <form
         onSubmit={handleRegister}
-        className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm"
+        className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold text-center text-violet-700 mb-6">
+        <h2 className="text-3xl font-extrabold text-center text-green-700 mb-6">
           Crear cuenta
         </h2>
 
@@ -39,7 +39,7 @@ export default function RegisterPage() {
             placeholder="Nombre completo"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-600"
+            className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           />
           <input
@@ -47,7 +47,7 @@ export default function RegisterPage() {
             placeholder="Correo electrónico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-600"
+            className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           />
           <input
@@ -55,13 +55,13 @@ export default function RegisterPage() {
             placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-600"
+            className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           />
 
           <button
             type="submit"
-            className="w-full bg-violet-600 text-white py-2 rounded hover:bg-violet-700 transition"
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md transition duration-300"
             disabled={loading}
           >
             {loading ? "Registrando..." : "Registrarse"}
@@ -72,7 +72,7 @@ export default function RegisterPage() {
           ¿Ya tienes cuenta?{" "}
           <Link
             to="/login"
-            className="text-violet-600 font-semibold hover:underline"
+            className="text-green-700 font-semibold hover:underline"
           >
             Inicia sesión
           </Link>
