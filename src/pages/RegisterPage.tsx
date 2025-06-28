@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { register } from "../service/authService";
 import { useNavigate, Link } from "react-router-dom";
+import { Loader2, UserPlus } from "lucide-react";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -24,47 +25,78 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-100 to-pink-100 px-4">
       <form
         onSubmit={handleRegister}
-        className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm"
+        className="bg-white w-full max-w-md rounded-2xl shadow-lg p-8 border border-gray-200"
       >
-        <h2 className="text-2xl font-bold text-center text-violet-700 mb-6">
-          Crear cuenta
-        </h2>
+        <div className="flex items-center justify-center mb-6">
+          <div className="flex items-center justify-center w-10 h-10 bg-violet-500 rounded-full">
+            <UserPlus className="text-white w-5 h-5" />
+          </div>
+        </div>
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">Crear cuenta</h2>
+        <p className="text-center text-sm text-gray-500 mb-6">
+          Únete a VidaFit y empieza tu transformación
+        </p>
 
         <div className="space-y-4">
-          <input
-            type="text"
-            placeholder="Nombre completo"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-600"
-            required
-          />
-          <input
-            type="email"
-            placeholder="Correo electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-600"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-600"
-            required
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nombre completo
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+              placeholder="Ana García"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Correo electrónico
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+              placeholder="ana@email.com"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+              placeholder="********"
+              required
+            />
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-violet-600 text-white py-2 rounded hover:bg-violet-700 transition"
             disabled={loading}
+            className="w-full flex items-center justify-center gap-2 bg-violet-600 text-white font-semibold py-2.5 rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Registrando..." : "Registrarse"}
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Registrando...
+              </>
+            ) : (
+              <>
+                <UserPlus className="w-4 h-4" />
+                Registrarse
+              </>
+            )}
           </button>
         </div>
 

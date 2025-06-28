@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
 import { login as loginRequest } from "../service/authService";
 import { useAuth } from "../context/AuthContext";
 
@@ -10,19 +10,17 @@ const LoginInterface: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [hover, setHover] = useState(false);
 
   const navigate = useNavigate();
   const { token, setToken } = useAuth();
 
-  /* Redirige apenas exista token */
   useEffect(() => {
     if (token) navigate("/dashboard", { replace: true });
   }, [token, navigate]);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError("Rellena usuario y contraseña.");
+      setError("Rellena el correo y la contraseña.");
       return;
     }
     setLoading(true);
@@ -31,9 +29,7 @@ const LoginInterface: React.FC = () => {
     try {
       const { data } = await loginRequest(email, password);
       if (!data?.token) throw new Error("La respuesta no trae token.");
-      setToken(data.token);           // contexto + localStorage
-      // No navegamos aquí; useEffect lo hará cuando setToken termine
-      console.log("Login OK, token guardado");
+      setToken(data.token);
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
@@ -46,16 +42,15 @@ const LoginInterface: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-      <div className="w-full max-w-sm">
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-100 to-pink-100 px-4">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-gray-200">
         {/* Logo */}
-        <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl mb-4 shadow-sm">
-            <div className="w-6 h-6 border-2 border-white rounded-md relative">
-              <div className="absolute inset-0.5 border border-white rounded-sm"></div>
-            </div>
+        <div className="mb-6 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-violet-500 rounded-full mb-4">
+            <LogIn className="text-white w-5 h-5" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">LOGIN</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Bienvenida de nuevo</h1>
+          <p className="text-sm text-gray-500 mt-1">Inicia sesión para continuar</p>
         </div>
 
         {/* Error */}
@@ -69,32 +64,32 @@ const LoginInterface: React.FC = () => {
         <div className="space-y-4">
           {/* Email */}
           <div className="relative">
-            <Mail className="absolute inset-y-0 left-0 ml-3 my-auto h-5 w-5 text-gray-400" />
+            <Mail className="absolute inset-y-0 left-3 my-auto h-5 w-5 text-gray-400" />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 placeholder-gray-500"
+              placeholder="Correo electrónico"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-500"
               required
             />
           </div>
 
           {/* Password */}
           <div className="relative">
-            <Lock className="absolute inset-y-0 left-0 ml-3 my-auto h-5 w-5 text-gray-400" />
+            <Lock className="absolute inset-y-0 left-3 my-auto h-5 w-5 text-gray-400" />
             <input
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="w-full pl-10 pr-10 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 placeholder-gray-500"
+              placeholder="Contraseña"
+              className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-500"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              className="absolute inset-y-0 right-3 flex items-center"
             >
               {showPassword ? (
                 <EyeOff className="h-5 w-5 text-gray-400" />
@@ -104,36 +99,46 @@ const LoginInterface: React.FC = () => {
             </button>
           </div>
 
-          {/* Forgot */}
           <div className="text-right">
             <button
               type="button"
-              className="text-pink-500 hover:text-pink-600 text-sm"
+              className="text-sm text-violet-600 hover:underline"
             >
-              Forgot Password?
+              ¿Olvidaste tu contraseña?
             </button>
           </div>
         </div>
 
-        {/* Botón */}
+        {/* Login button */}
         <button
           type="button"
           onClick={handleLogin}
           disabled={loading}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          className={`w-full mt-6 py-3 rounded-lg font-semibold text-white shadow-md transition-all ${
+          className={`w-full mt-6 flex items-center justify-center gap-2 py-3 rounded-lg font-semibold text-white transition-colors duration-200 ${
             loading
               ? "bg-gray-300 cursor-not-allowed"
-              : `bg-gradient-to-r from-pink-500 to-pink-600 ${
-                  hover ? "scale-105 shadow-lg" : "hover:shadow-lg"
-                }`
+              : "bg-gradient-to-r from-pink-500 to-pink-600 hover:shadow-lg"
           }`}
         >
-          {loading ? "Entrando…" : "LOGIN"}
+          {loading ? "Entrando…" : (
+            <>
+              <LogIn className="w-4 h-4" />
+              Iniciar sesión
+            </>
+          )}
         </button>
+
+        <p className="mt-6 text-center text-sm text-gray-700">
+          ¿No tienes una cuenta?{" "}
+          <button
+            onClick={() => navigate("/register")}
+            className="text-violet-600 font-semibold hover:underline"
+          >
+            Regístrate
+          </button>
+        </p>
       </div>
-    </div>
+    </main>
   );
 };
 
