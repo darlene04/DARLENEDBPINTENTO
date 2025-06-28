@@ -1,5 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { LogOut, Edit3 } from "lucide-react";
 
 export default function Navbar() {
   const { token, setToken } = useAuth();
@@ -11,28 +12,42 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full bg-violet-700 text-white px-6 py-4 shadow-md flex items-center justify-between">
-      <div className="text-2xl font-bold tracking-wide cursor-pointer" onClick={() => navigate("/dashboard")}>
-        VidaFit
-      </div>
-
-      {token && (
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={() => navigate("/edit-profile")}
-            className="bg-white text-violet-700 px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-gray-100 transition"
+    <nav className="bg-white shadow-sm border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo / Brand */}
+          <div
+            className="flex items-center space-x-2 cursor-pointer"
+            onClick={() => navigate("/dashboard")}
           >
-            Editar perfil
-          </button>
+            <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-violet-500 to-pink-500 rounded-lg">
+              <span className="text-white font-bold text-sm">VF</span>
+            </div>
+            <h1 className="text-xl font-bold text-gray-900 tracking-tight">VidaFit</h1>
+          </div>
 
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded-lg text-sm font-semibold transition"
-          >
-            Cerrar sesión
-          </button>
+          {/* Botones de acción */}
+          {token && (
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => navigate("/edit-profile")}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm font-medium"
+              >
+                <Edit3 className="w-4 h-4" />
+                Editar perfil
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-sm font-medium"
+              >
+                <LogOut className="w-4 h-4" />
+                Cerrar sesión
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </nav>
   );
 }
