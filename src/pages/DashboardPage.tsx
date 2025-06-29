@@ -391,7 +391,7 @@ const Dashboard: React.FC = () => {
                     Publicar Rutina
                   </button>
                   <button
-                    onClick={() => navigate("/planes/crear")}
+                    onClick={() => navigate("/planes-alimentacion/crear")}
                     className="flex-1 px-4 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition"
                   >
                     Plan Alimenticio
