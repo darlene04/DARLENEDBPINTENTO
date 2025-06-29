@@ -87,7 +87,6 @@ const DetallePlanAlimentacion: React.FC = () => {
                 {plan.titulo}
               </h1>
               
-              {/* Stats Cards */}
               <div className="grid grid-cols-3 gap-4 mb-8">
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20">
                   <Clock3 className="w-6 h-6 text-white mb-2 mx-auto" />
@@ -106,7 +105,6 @@ const DetallePlanAlimentacion: React.FC = () => {
                 </div>
               </div>
               
-              {/* Rating */}
               <div className="flex items-center gap-2 text-white/90">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
@@ -134,10 +132,8 @@ const DetallePlanAlimentacion: React.FC = () => {
         </div>
       </div>
 
-      {/* Content Section */}
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main Content */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
@@ -151,7 +147,6 @@ const DetallePlanAlimentacion: React.FC = () => {
               </div>
             </div>
 
-            {/* Objetivos y Restricciones */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-6 border border-emerald-200">
                 <h3 className="text-lg font-semibold text-emerald-800 mb-3 flex items-center gap-2">
@@ -179,9 +174,7 @@ const DetallePlanAlimentacion: React.FC = () => {
             </div>
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-8">
-            {/* Recetas relacionadas */}
             {recetasRelacionadas.length > 0 && (
               <div className="bg-white rounded-2xl shadow-lg p-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -209,7 +202,6 @@ const DetallePlanAlimentacion: React.FC = () => {
               </div>
             )}
 
-            {/* Rutinas relacionadas */}
             {rutinasRelacionadas.length > 0 && (
               <div className="bg-white rounded-2xl shadow-lg p-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">

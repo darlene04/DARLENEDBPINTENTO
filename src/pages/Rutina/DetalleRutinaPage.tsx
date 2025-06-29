@@ -83,9 +83,8 @@ const DetalleRutinaPage: React.FC = () => {
 
   if (!rutina) return null;
 
-  // Función para obtener color de nivel
   const getNivelColor = (nivel?: string | null) => {
-    const v = nivel?.toLowerCase();     // solo se evalúa si hay string
+    const v = nivel?.toLowerCase();
     switch (v) {
       case 'easy':
       case 'fácil':
@@ -97,16 +96,14 @@ const DetalleRutinaPage: React.FC = () => {
       case 'difícil':
         return 'bg-teal-100 text-teal-700';
       default:
-        return 'bg-gray-100 text-gray-700'; // fallback seguro
+        return 'bg-gray-100 text-gray-700';
     }
   };
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-cyan-50">
-      {/* Navbar original */}
       <Navbar />
       
-      {/* Sidebar toggle */}
       <div className="flex items-center justify-start px-4 py-4">
         <button
           onClick={() => setIsSidebarOpen(true)}
@@ -118,11 +115,9 @@ const DetalleRutinaPage: React.FC = () => {
 
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Left Column - Exercise Image */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden sticky top-8">
               <div className="relative h-80 bg-gradient-to-b from-gray-100 to-gray-200 flex items-center justify-center">
@@ -148,7 +143,6 @@ const DetalleRutinaPage: React.FC = () => {
                 </div>
               </div>
               
-              {/* Action Buttons */}
               <div className="p-6 space-y-4">
                 <button className="w-full bg-gradient-to-r from-green-400 to-cyan-500 text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-3 shadow-lg hover:from-green-500 hover:to-cyan-600 transition-all transform hover:scale-105">
                   <Play className="w-5 h-5" />
@@ -162,10 +156,8 @@ const DetalleRutinaPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column - Exercise Details */}
           <div className="lg:col-span-2 space-y-8">
             
-            {/* Back Button */}
             <button
               onClick={() => navigate(-1)}
               className="text-green-600 hover:text-green-800 flex items-center gap-2 text-sm font-medium bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all"
@@ -173,10 +165,8 @@ const DetalleRutinaPage: React.FC = () => {
               <ArrowLeft className="w-4 h-4" /> Volver
             </button>
 
-            {/* Main Info Card */}
             <div className="bg-white rounded-2xl shadow-lg p-8">
               
-              {/* Header */}
               <div className="mb-6">
                 <div className="flex items-center gap-3 text-sm text-green-600 font-medium mb-2">
                   <Dumbbell className="w-4 h-4" />
@@ -189,7 +179,6 @@ const DetalleRutinaPage: React.FC = () => {
                   <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-sm">Entrenador Certificado</span>
                 </div>
 
-                {/* Stats */}
                 <div className="flex flex-wrap gap-4">
                   <div className="flex items-center gap-3 bg-green-100 px-4 py-3 rounded-xl">
                     <Clock className="w-5 h-5 text-green-600" />
@@ -209,13 +198,11 @@ const DetalleRutinaPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Description */}
               <div className="mb-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Descripción de la Rutina</h3>
                 <p className="text-gray-600 leading-relaxed text-lg whitespace-pre-line">{rutina.descripcion}</p>
               </div>
 
-              {/* Additional Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-gray-50 rounded-xl">
                 <div>
                   <span className="text-sm font-medium text-gray-500">Fecha de Publicación</span>
@@ -234,7 +221,6 @@ const DetalleRutinaPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Exercises List */}
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Ejercicios de la Rutina</h2>
               <div className="space-y-6">
@@ -242,7 +228,6 @@ const DetalleRutinaPage: React.FC = () => {
                   <div key={ej.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                     <div className="flex flex-col lg:flex-row gap-6">
                       
-                      {/* Exercise Info */}
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
                           <span className="bg-green-100 text-green-700 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
@@ -272,7 +257,6 @@ const DetalleRutinaPage: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Exercise Image */}
                       {ej.imagenUrl && (
                         <div className="lg:w-48 flex-shrink-0">
                           <img

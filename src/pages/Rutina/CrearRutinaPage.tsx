@@ -13,13 +13,12 @@ interface Ejercicio {
   repeticiones: number;
   descansoSegundos: number;
   pesoKg: number;
-  imagen?: File | null; // nuevo campo para la imagen
+  imagen?: File | null;
 }
 
 const CrearRutinaPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // ---------------- Rutina ----------------
   const [titulo, setTitulo] = useState("");
   const [contenido, setContenido] = useState("");
   const [nombreRutina, setNombreRutina] = useState("");
@@ -27,12 +26,8 @@ const CrearRutinaPage: React.FC = () => {
   const [frecuencia, setFrecuencia] = useState("");
   const [nivel, setNivel] = useState("");
   const [objetivo, setObjetivo] = useState("");
-
-
-  // ---------------- Sidebar ----------------
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // ---------------- Ejercicios ----------------
   const [nuevoEjercicio, setNuevoEjercicio] = useState<Ejercicio>({
     nombre: "",
     descripcion: "",
@@ -58,10 +53,8 @@ const CrearRutinaPage: React.FC = () => {
     });
   };
 
-  // ---------------- Guardar rutina ----------------
   const handleGuardarRutina = async () => {
     try {
-      // 1️⃣ Subir cada ejercicio (JSON + imagen → multipart/form‑data)
       const ejercicioResponses = await Promise.all(
         ejercicios.map(async (ej) => {
           const form = new FormData();
@@ -99,7 +92,6 @@ const CrearRutinaPage: React.FC = () => {
 
       const ejercicioIds = ejercicioResponses.map((res) => res.data.id);
 
-      // 2️⃣ Crear rutina con los IDs
       await axios.post(
         `${import.meta.env.VITE_API_URL}/api/publicaciones/rutinas`,
         {
@@ -144,14 +136,11 @@ const CrearRutinaPage: React.FC = () => {
 
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      {/* Contenedor principal */}
       <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto bg-white rounded-xl shadow-md mt-8 border border-gray-200">
         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2 mb-6">
           <Dumbbell className="w-6 h-6 text-green-600" />
           Crear nueva rutina
         </h1>
-
-        {/* Datos de rutina */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="flex flex-col">
           <label className="text-sm text-gray-600 mb-1">Título</label>
@@ -249,7 +238,7 @@ const CrearRutinaPage: React.FC = () => {
                 className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
-            {/* Descripción */}
+            
             <div className="flex flex-col">
               <label className="text-sm text-gray-600 mb-1">Descripción</label>
               <input
@@ -259,7 +248,7 @@ const CrearRutinaPage: React.FC = () => {
                 className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
-            {/* Series */}
+            
             <div className="flex flex-col">
               <label className="text-sm text-gray-600 mb-1">Series</label>
               <input
@@ -270,7 +259,7 @@ const CrearRutinaPage: React.FC = () => {
                 className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
-            {/* Repeticiones */}
+            
             <div className="flex flex-col">
               <label className="text-sm text-gray-600 mb-1">Repeticiones</label>
               <input
@@ -281,7 +270,7 @@ const CrearRutinaPage: React.FC = () => {
                 className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
-            {/* Descanso */}
+            
             <div className="flex flex-col">
               <label className="text-sm text-gray-600 mb-1">Descanso (s)</label>
               <input
@@ -292,7 +281,7 @@ const CrearRutinaPage: React.FC = () => {
                 className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
-            {/* Peso */}
+            
             <div className="flex flex-col">
               <label className="text-sm text-gray-600 mb-1">Peso (kg)</label>
               <input
@@ -303,7 +292,7 @@ const CrearRutinaPage: React.FC = () => {
                 className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
-            {/* Imagen */}
+            
             <div className="flex flex-col md:col-span-3">
               <label className="text-sm text-gray-600 mb-1">Imagen</label>
               <input
@@ -324,7 +313,6 @@ const CrearRutinaPage: React.FC = () => {
           </button>
         </div>
 
-        {/* Lista de ejercicios */}
         <div className="space-y-4 mb-6">
         {ejercicios.map((ej, i) => (
           <div key={i} className="bg-white p-4 border rounded-lg shadow-sm">
@@ -340,7 +328,6 @@ const CrearRutinaPage: React.FC = () => {
         ))}
       </div>
       
-        {/* Guardar rutina */}
         <button
           onClick={handleGuardarRutina}
           className="bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors duration-200"

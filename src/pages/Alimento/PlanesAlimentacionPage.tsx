@@ -66,7 +66,7 @@ const PlanesAlimentacionPage: React.FC = () => {
       return matchesSearch && matchesDiet && matchesObjective && matchesCalories;
     });
 
-    // Ordenar
+    
     switch (sortBy) {
       case "calorias":
         return filtered.sort((a, b) => a.calorias - b.calorias);
@@ -85,7 +85,6 @@ const PlanesAlimentacionPage: React.FC = () => {
     return [...new Set(planes.map(plan => plan.objetivos))];
   }, [planes]);
 
-  // Función para obtener el color según el tipo de dieta
   const getDietTypeColor = (tipoDieta: string) => {
     switch (tipoDieta.toLowerCase()) {
       case 'vegetariana':
@@ -106,7 +105,6 @@ const PlanesAlimentacionPage: React.FC = () => {
     }
   };
 
-  // Función para obtener el color según las calorías
   const getCaloriesColor = (calorias: number) => {
     if (calorias < 1500) return 'text-blue-600';
     if (calorias < 2000) return 'text-green-600';
@@ -197,7 +195,6 @@ const PlanesAlimentacionPage: React.FC = () => {
                 />
               </div>
 
-              {/* Filtro por tipo de dieta */}
               <div className="relative">
                 <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <select
@@ -212,7 +209,6 @@ const PlanesAlimentacionPage: React.FC = () => {
                 </select>
               </div>
 
-              {/* Filtro por objetivos */}
               <div className="relative">
                 <Target className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <select
@@ -227,7 +223,6 @@ const PlanesAlimentacionPage: React.FC = () => {
                 </select>
               </div>
 
-              {/* Filtro por calorías */}
               <div>
                 <select
                   value={calorieRange}
@@ -241,7 +236,6 @@ const PlanesAlimentacionPage: React.FC = () => {
                 </select>
               </div>
 
-              {/* Ordenar */}
               <div>
                 <select
                   value={sortBy}
@@ -255,7 +249,6 @@ const PlanesAlimentacionPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Resumen de resultados */}
             <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
               <span>
                 {filteredPlanes.length} {filteredPlanes.length === 1 ? 'plan encontrado' : 'planes encontrados'}

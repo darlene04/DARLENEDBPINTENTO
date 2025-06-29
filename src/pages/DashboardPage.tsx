@@ -16,7 +16,6 @@ import { Menu } from "lucide-react";
 import { getUserInfo } from "../service/authService";
 import { useAuth } from "../context/AuthContext";
 
-// ------------ MOCKS TEMPORAL (puedes quitarlos si ya tienes datos reales) ------------
 const mockProgress = {
   currentWeight: 68,
   goalWeight: 65,
@@ -32,24 +31,20 @@ const mockPublications = [
     createdAt: "2024-06-25",
   },
 ];
-// ------------------------------------------------------------------------------------
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
 
-  // ----------- estado de usuario y lateral ------------
   const [user, setUser] = useState<any>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // ----------- progreso ------------
   const [progress, setProgress] = useState(mockProgress);
   const [showProgressForm, setShowProgressForm] = useState(false);
   const [newWeight, setNewWeight] = useState("");
   const [newGoal, setNewGoal] = useState("");
 
-  // ----------- publicaciones propias / comunidad ------------
   const [publications, setPublications] = useState<
     {
       id: number;
@@ -62,21 +57,18 @@ const Dashboard: React.FC = () => {
   >(mockPublications);
   const [otrasPublicaciones, setOtrasPublicaciones] = useState<any[]>([]);
 
-  // ----------- creación de publicación ------------
   const [showPublicationForm, setShowPublicationForm] = useState(false);
   const [publicationType, setPublicationType] =
     useState<"rutina" | "plan" | "normal" | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
 
-  // ---------- métricas derivadas ----------
   const progressPercentage = Math.min(
     100,
     (progress.currentWeight / progress.goalWeight) * 100
   );
   const weightToLose = Math.max(0, progress.currentWeight - progress.goalWeight);
 
-  // ---------- cargar usuario ----------
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -91,7 +83,6 @@ const Dashboard: React.FC = () => {
     fetchUser();
   }, [token]);
 
-  // ---------- cargar publicaciones propias (con rutinas) ----------
   useEffect(() => {
     const fetchMisPublicaciones = async () => {
       try {
@@ -123,7 +114,6 @@ const Dashboard: React.FC = () => {
     if (token) fetchMisPublicaciones();
   }, [token]);
 
-  // ---------- cargar publicaciones de la comunidad ----------
   useEffect(() => {
     const fetchComunidad = async () => {
       try {
@@ -140,7 +130,6 @@ const Dashboard: React.FC = () => {
     if (user) fetchComunidad();
   }, [user]);
 
-  // ---------- handlers ----------
   const handleProgressSubmit = () => {
     if (newWeight && newGoal) {
       setProgress({
@@ -172,7 +161,6 @@ const Dashboard: React.FC = () => {
     setPublicationType(null);
   };
 
-  // ---------- avatar ----------
   const avatar =
     user?.avatar ||
     user?.name
@@ -197,7 +185,7 @@ const Dashboard: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-cyan-50">
       <Navbar />
 
-      {/* botón hamburguesa */}
+      
       <div className="flex items-center px-4 py-4">
         <button
           onClick={() => setSidebarOpen(true)}
@@ -208,9 +196,9 @@ const Dashboard: React.FC = () => {
       </div>
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* CONTENIDO */}
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* encabezado */}
+       
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-gray-600">Bienvenido de vuelta, {user.name}</p>
@@ -218,7 +206,7 @@ const Dashboard: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {/* ------------ PROGRESO ------------- */}
+            
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
@@ -280,7 +268,7 @@ const Dashboard: React.FC = () => {
                 {new Date(progress.lastUpdated).toLocaleDateString()}
               </p>
 
-              {/*Formulario de progreso */}
+              
               {showProgressForm && (
                 <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <h3 className="font-semibold text-gray-900 mb-4">
@@ -378,7 +366,7 @@ const Dashboard: React.FC = () => {
 
 
 <div className="bg-white rounded-xl shadow-sm border p-6">
-              {/* título + botón nueva */}
+             
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold">Mis Publicaciones</h2>
                 <button
@@ -393,7 +381,7 @@ const Dashboard: React.FC = () => {
                 </button>
               </div>
 
-              {/* ---------- selector de tipo ---------- */}
+              
               {showPublicationForm && publicationType === null && (
                 <div className="mb-6 flex flex-col md:flex-row gap-3">
                   <button
@@ -417,7 +405,6 @@ const Dashboard: React.FC = () => {
                 </div>
               )}
 
-              {/* ---------- formulario para publicación normal ---------- */}
               {showPublicationForm && publicationType === "normal" && (
                 <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
                   <h3 className="font-semibold mb-4">Nueva Publicación</h3>
@@ -459,58 +446,55 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
               )}
-              {/* Lista de publicaciones */}
               <div className="space-y-4">
-  {publications.map((pub) => (
-    <div
-      key={pub.id}
-      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
-    >
-      <div className="flex items-start justify-between mb-2">
-        <h3 className="font-semibold text-gray-900">{pub.title}</h3>
-        <span className="text-xs text-gray-500">
-          {new Date(pub.createdAt).toLocaleDateString()}
-        </span>
-      </div>
-      <p className="text-gray-700 text-sm mb-3">{pub.content}</p>
-      <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-        <div className="flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
-          <span className="text-xs font-semibold text-green-700">
-            {avatar}
-          </span>
-        </div>
-        <span>Por {pub.author}</span>
-      </div>
+                {publications.map((pub) => (
+                  <div
+                    key={pub.id}
+                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-gray-900">{pub.title}</h3>
+                      <span className="text-xs text-gray-500">
+                        {new Date(pub.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="text-gray-700 text-sm mb-3">{pub.content}</p>
+                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                      <div className="flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
+                        <span className="text-xs font-semibold text-green-700">
+                          {avatar}
+                        </span>
+                      </div>
+                      <span>Por {pub.author}</span>
+                    </div>
 
-      {(pub.ejercicios ?? []).length > 0 && (
-        <div className="mt-4 space-y-2">
-          <h4 className="text-sm font-semibold text-gray-800">Ejercicios:</h4>
-          {pub.ejercicios?.map((ej: any) => (
-            <div key={ej.id} className="text-sm border rounded p-2 bg-gray-50">
-              <p className="font-semibold">{ej.nombre}</p>
-              <p className="text-gray-600">{ej.descripcion}</p>
-              <p className="text-gray-700">
-                {ej.series} series, {ej.repeticiones} reps, {ej.pesoKg}kg, descanso {ej.descansoSegundos}s
-              </p>
-              {ej.imagenUrl && (
-                <img
-                  src={`${import.meta.env.VITE_API_URL}${ej.imagenUrl}`}
-                  alt={ej.nombre}
-                  className="w-32 mt-2 rounded"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  ))}
-</div>
-
+                    {(pub.ejercicios ?? []).length > 0 && (
+                      <div className="mt-4 space-y-2">
+                        <h4 className="text-sm font-semibold text-gray-800">Ejercicios:</h4>
+                        {pub.ejercicios?.map((ej: any) => (
+                          <div key={ej.id} className="text-sm border rounded p-2 bg-gray-50">
+                            <p className="font-semibold">{ej.nombre}</p>
+                            <p className="text-gray-600">{ej.descripcion}</p>
+                            <p className="text-gray-700">
+                              {ej.series} series, {ej.repeticiones} reps, {ej.pesoKg}kg, descanso {ej.descansoSegundos}s
+                            </p>
+                            {ej.imagenUrl && (
+                              <img
+                                src={`${import.meta.env.VITE_API_URL}${ej.imagenUrl}`}
+                                alt={ej.nombre}
+                                className="w-32 mt-2 rounded"
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* ------------ SIDEBAR ------------- */}
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center gap-4 mb-4">
