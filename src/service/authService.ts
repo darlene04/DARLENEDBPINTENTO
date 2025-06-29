@@ -11,3 +11,11 @@ export function register(name: string, email: string, password: string) {
 }
 
 
+export function getUserInfo() {
+  const token = localStorage.getItem("token");
+  return axios.get(`${API}/user/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
