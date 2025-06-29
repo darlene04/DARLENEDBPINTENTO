@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:8090";
+const API = import.meta.env.VITE_API_URL;
 
 export function createPublication(token: string, title: string, content: string) {
   return axios.post(

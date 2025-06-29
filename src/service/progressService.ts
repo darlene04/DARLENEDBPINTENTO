@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:8090";
+const API = import.meta.env.VITE_API_URL;
 
 export function getProgress(token: string) {
   return axios.get(`${API}/api/progress`, {

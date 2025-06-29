@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
 import { login as loginRequest } from "../service/authService";
 import { useAuth } from "../context/AuthContext";
+import { useLocation } from "react-router-dom";
 
 const LoginInterface: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -13,11 +14,18 @@ const LoginInterface: React.FC = () => {
 
   const navigate = useNavigate();
   const { token, setToken } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
-    if (token) navigate("/dashboard", { replace: true });
-  }, [token, navigate]);
-
+    const isLoginPage = ["/login", "/auth/login"].includes(location.pathname);
+  
+    if (token && isLoginPage) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [token, location.pathname, navigate]);
+  
+  
+  
   const handleLogin = async () => {
     if (!email || !password) {
       setError("Rellena el correo y la contraseña.");

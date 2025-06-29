@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getAllRoutines } from "../service/authService";
-import { Dumbbell } from "lucide-react";
+import { Dumbbell, Plus } from "lucide-react";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 interface Routine {
   id: number;
@@ -13,6 +14,7 @@ interface Routine {
 
 const RoutinesPage: React.FC = () => {
   const [routines, setRoutines] = useState<Routine[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllRoutines()
@@ -23,14 +25,24 @@ const RoutinesPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-pink-50">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2 mb-6">
-          <Dumbbell className="w-6 h-6 text-violet-600" />
-          Rutinas Disponibles
-        </h1>
+      <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto bg-white rounded-xl shadow-md mt-8 border border-gray-200">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
+            <Dumbbell className="w-6 h-6 text-violet-600" />
+            Rutinas Disponibles
+          </h1>
+
+          <button
+            onClick={() => navigate("/rutinas/crear")}
+            className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition"
+          >
+            <Plus className="w-4 h-4" />
+            Nueva rutina
+          </button>
+        </div>
 
         {routines.length === 0 ? (
           <p className="text-gray-600">No hay rutinas disponibles por ahora.</p>

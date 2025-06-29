@@ -11,6 +11,10 @@ import Navbar from "../components/Navbar";
 
 import { getUserInfo } from "../service/authService";
 import { useAuth } from "../context/AuthContext";
+import Sidebar from "../components/Sidebar";
+import { Menu } from "lucide-react";
+
+// localStorage.removeItem("token");
 
 const mockProgress = {
   currentWeight: 68,
@@ -40,6 +44,7 @@ const mockPublications = [
 const Dashboard: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [progress, setProgress] = useState(mockProgress);
   const [publications, setPublications] = useState(mockPublications);
@@ -127,7 +132,21 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 to-pink-50">
+      
+
+
       <Navbar />
+
+      <div className="flex items-center justify-start px-4 py-4">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="text-gray-700 hover:text-violet-600 focus:outline-none p-2"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      </div>
+
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
@@ -355,7 +374,7 @@ const Dashboard: React.FC = () => {
               </div>
               <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center gap-2">
                 <Edit3 className="w-4 h-4" />
-                Editar Perfil
+                Editar Perfil
               </button>
             </div>
 

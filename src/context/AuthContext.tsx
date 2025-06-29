@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextType>({
   token: null,
   setToken: () => {},
   isAuthenticated: false,
-  isLoading: true, // ← default true mientras carga
+  isLoading: true,
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
