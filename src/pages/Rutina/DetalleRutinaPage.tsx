@@ -4,7 +4,7 @@ import axios from "axios";
 import { ArrowLeft, Play, Eye, Clock, Flame, BarChart3, Menu, Dumbbell } from "lucide-react";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
-
+import ComentarioSection from "../../components/ComentarioSection";
 interface Ejercicio {
   id: number;
   nombre: string;
@@ -227,6 +227,11 @@ const DetalleRutinaPage: React.FC = () => {
                 {rutina.ejercicios.map((ej, index) => (
                   <div key={ej.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                     <div className="flex flex-col lg:flex-row gap-6">
+                      {/* Sección de Comentarios */}
+                      <div className="bg-white rounded-2xl shadow-lg p-8">
+                        <ComentarioSection publicacionId={parseInt(id || "0")} />
+                        </div>
+
                       
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
