@@ -26,6 +26,8 @@ const CrearRutinaPage: React.FC = () => {
   const [duracion, setDuracion] = useState<number | undefined>(undefined);
   const [frecuencia, setFrecuencia] = useState("");
   const [nivel, setNivel] = useState("");
+  const [objetivo, setObjetivo] = useState("");
+
 
   // ---------------- Sidebar ----------------
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -106,7 +108,8 @@ const CrearRutinaPage: React.FC = () => {
           nombreRutina,
           duracion,
           frecuencia,
-          dificultad: nivel.toLowerCase(),   
+          dificultad: nivel.toLowerCase(),
+          objetivo,   
           ejercicioIds,
         },
         {
@@ -190,6 +193,21 @@ const CrearRutinaPage: React.FC = () => {
             className="border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
+
+        <div className="flex flex-col">
+  <label className="text-sm text-gray-600 mb-1">Objetivo</label>
+  <select
+    value={objetivo}
+    onChange={(e) => setObjetivo(e.target.value)}
+    className="border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+  >
+    <option value="" disabled>-- Selecciona un objetivo --</option>
+    <option value="Pérdida de grasa corporal">Pérdida de grasa corporal</option>
+    <option value="Subir masa muscular">Subir masa muscular</option>
+    <option value="Mantener peso">Mantener peso</option>
+    <option value="Salud general">Salud general</option>
+  </select>
+</div>
 
         <div className="flex flex-col">
           <label className="text-sm text-gray-600 mb-1">Nivel</label>

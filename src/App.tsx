@@ -15,6 +15,7 @@ import CrearRutinaPage from "./pages/Rutina/CrearRutinaPage";
 import DetalleRutinaPage from "./pages/Rutina/DetalleRutinaPage";
 import PlanesAlimentacionPage from "./pages/Alimento/PlanesAlimentacionPage";   
 import CrearPlanAlimenticioPage from "./pages/Alimento/CrearPlanAlimenticioPage";
+import DetallePlanAlimentacion from "./pages/Alimento/DetallePlanAlimentacion";
 
 function App() {
   const { token, isLoading } = useAuth();
@@ -30,6 +31,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/rutinas" element={<RoutinesPage />} />
+        <Route path="/planes-alimentacion/:id" element={<DetallePlanAlimentacion />} />
 
         {/* Rutas protegidas */}
         <Route

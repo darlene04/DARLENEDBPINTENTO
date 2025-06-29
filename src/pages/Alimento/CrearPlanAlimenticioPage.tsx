@@ -85,15 +85,21 @@ const CrearPlanAlimentacionPage: React.FC = () => {
             placeholder="Calorías estimadas"
             className="border px-4 py-2 rounded-lg"
           />
-          <select
-            value={objetivos}
-            onChange={(e) => setObjetivos(e.target.value)}
-            className="border px-4 py-2 rounded-lg"
-          >
-            <option value="Bajar de peso">Bajar de peso</option>
-            <option value="Mantener peso">Mantener peso</option>
-            <option value="Subir masa muscular">Subir masa muscular</option>
-          </select>
+          <div className="flex flex-col">
+  <label className="text-sm text-gray-600 mb-1">Objetivo</label>
+  <select
+    value={objetivos}
+    onChange={(e) => setObjetivos(e.target.value)}
+    className="border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+  >
+    <option value="" disabled>-- Selecciona un objetivo --</option>
+    <option value="Pérdida de grasa corporal">Pérdida de grasa corporal</option>
+    <option value="Subir masa muscular">Subir masa muscular</option>
+    <option value="Mantener peso">Mantener peso</option>
+    <option value="Salud general">Salud general</option>
+  </select>
+</div>
+
           <textarea
             value={contenido}
             onChange={(e) => setContenido(e.target.value)}
