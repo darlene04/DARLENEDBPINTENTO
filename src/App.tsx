@@ -13,6 +13,8 @@ import RoutinesPage from "./pages/RoutinesPage";
 import PerfilPage from "./pages/PerfilPage";
 import CrearRutinaPage from "./pages/Rutina/CrearRutinaPage";
 import DetalleRutinaPage from "./pages/Rutina/DetalleRutinaPage";
+import PlanesAlimentacionPage from "./pages/Alimento/PlanesAlimentacionPage";   
+import CrearPlanAlimenticioPage from "./pages/Alimento/CrearPlanAlimenticioPage";
 
 function App() {
   const { token, isLoading } = useAuth();
@@ -58,10 +60,17 @@ function App() {
 
         <Route path="/rutinas/:id" element={<DetalleRutinaPage />} />
 
-
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+        <Route
+        path="/planes-alimentacion"
+        element={token ? <PlanesAlimentacionPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/planes-alimentacion/crear"
+          element={token ? <CrearPlanAlimenticioPage /> : <Navigate to="/login" replace />}
+        />
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
+  </BrowserRouter>
   );
 }
 

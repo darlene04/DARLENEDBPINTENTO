@@ -1,5 +1,6 @@
-import { X, Home, User, LogOut, Dumbbell } from "lucide-react"; // Asegúrate de importar Dumbbell
+import { X, Home, User, LogOut, Dumbbell,Utensils } from "lucide-react"; // Asegúrate de importar Dumbbell
 import { Link } from "react-router-dom";
+
 
 export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   return (
@@ -23,6 +24,14 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
           <Dumbbell className="w-4 h-4" />
           Rutinas
         </Link>
+        <Link
+        to="/planes-alimentacion"
+        className="flex items-center gap-2 text-gray-700 hover:text-lime-600"
+        >
+          <Utensils className="w-4 h-4" />
+          Planes Alimenticios
+          </Link>
+
         <Link to="/perfil" className="flex items-center gap-2 text-gray-700 hover:text-violet-600">
           <User className="w-4 h-4" />
           Perfil
