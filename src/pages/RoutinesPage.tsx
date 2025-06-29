@@ -11,6 +11,7 @@ interface Routine {
   titulo: string;
   contenido: string | null;
   nombreRutina: string;
+  descripcion: string | null; // Added descripcion property
   duracion: number;
   frecuencia: string;
   nivel: string | null;
