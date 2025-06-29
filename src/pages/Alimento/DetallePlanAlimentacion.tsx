@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { ArrowLeft, Flame, Clock3, Target, Star, Users, ChefHat, Apple } from "lucide-react";
+import ComentarioSection from "../../components/ComentarioSection";
 
 interface PlanAlimentacion {
   id_publicacion: number;
@@ -132,6 +133,7 @@ const DetallePlanAlimentacion: React.FC = () => {
         </div>
       </div>
 
+
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2">
@@ -172,7 +174,12 @@ const DetallePlanAlimentacion: React.FC = () => {
                 </div>
               )}
             </div>
+            {/* Sección de Comentarios */}
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+                    <ComentarioSection publicacionId={parseInt(id || "0")} />
+                </div>
           </div>
+
 
           <div className="space-y-8">
             {recetasRelacionadas.length > 0 && (
