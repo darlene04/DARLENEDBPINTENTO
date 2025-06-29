@@ -7,8 +7,9 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import EditProfilePage from "./pages/EditProfilePage";
 import PublicationsPage from "./pages/PublicationsPage";
-import PublicProfilePage from "./pages/PublicProfilePage"; // ✅ IMPORTANTE
+import PublicProfilePage from "./pages/PublicProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import RoutinesPage from "./pages/RoutinesPage";
 
 function App() {
   const { token } = useAuth();
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/rutinas" element={<RoutinesPage />} />
 
         <Route
           path="/dashboard"
