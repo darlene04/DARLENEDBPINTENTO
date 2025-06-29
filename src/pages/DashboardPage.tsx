@@ -7,21 +7,21 @@ import {
   Calendar,
   Weight,
 } from "lucide-react";
-import Navbar from "../components/Navbar";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-import { getUserInfo } from "../service/authService";
-import { useAuth } from "../context/AuthContext";
+import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { Menu } from "lucide-react";
+import { getUserInfo } from "../service/authService";
+import { useAuth } from "../context/AuthContext";
 
-// localStorage.removeItem("token");
-
+// ------------ MOCKS TEMPORAL (puedes quitarlos si ya tienes datos reales) ------------
 const mockProgress = {
   currentWeight: 68,
   goalWeight: 65,
   lastUpdated: "2024-06-28",
 };
-
 const mockPublications = [
   {
     id: 1,
@@ -31,38 +31,52 @@ const mockPublications = [
     author: "Ana García",
     createdAt: "2024-06-25",
   },
-  {
-    id: 2,
-    title: "Receta saludable: Ensalada mediterránea",
-    content:
-      "Quiero compartir mi receta favorita que me ha ayudado mucho en mi proceso. Es súper fácil y deliciosa.",
-    author: "Ana García",
-    createdAt: "2024-06-20",
-  },
 ];
+// ------------------------------------------------------------------------------------
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const { token } = useAuth();
+
+  // ----------- estado de usuario y lateral ------------
   const [user, setUser] = useState<any>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // ----------- progreso ------------
   const [progress, setProgress] = useState(mockProgress);
-  const [publications, setPublications] = useState(mockPublications);
   const [showProgressForm, setShowProgressForm] = useState(false);
-  const [showPublicationForm, setShowPublicationForm] = useState(false);
   const [newWeight, setNewWeight] = useState("");
   const [newGoal, setNewGoal] = useState("");
+
+  // ----------- publicaciones propias / comunidad ------------
+  const [publications, setPublications] = useState<
+    {
+      id: number;
+      title: string;
+      content: string;
+      author: string;
+      createdAt: string;
+      ejercicios?: { id: number; nombre: string; descripcion: string; series: number; repeticiones: number; pesoKg: number; descansoSegundos: number; imagenUrl?: string }[];
+    }[]
+  >(mockPublications);
+  const [otrasPublicaciones, setOtrasPublicaciones] = useState<any[]>([]);
+
+  // ----------- creación de publicación ------------
+  const [showPublicationForm, setShowPublicationForm] = useState(false);
+  const [publicationType, setPublicationType] =
+    useState<"rutina" | "plan" | "normal" | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
 
+  // ---------- métricas derivadas ----------
   const progressPercentage = Math.min(
     100,
     (progress.currentWeight / progress.goalWeight) * 100
   );
   const weightToLose = Math.max(0, progress.currentWeight - progress.goalWeight);
 
-  const { token } = useAuth();
-
+  // ---------- cargar usuario ----------
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -77,6 +91,56 @@ const Dashboard: React.FC = () => {
     fetchUser();
   }, [token]);
 
+  // ---------- cargar publicaciones propias (con rutinas) ----------
+  useEffect(() => {
+    const fetchMisPublicaciones = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/publicaciones/autor`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const base = res.data;
+        const completas = await Promise.all(
+          base.map(async (pub: any) => {
+            const det = await axios.get(
+              `${import.meta.env.VITE_API_URL}/api/publicaciones/rutinas/${pub.id}`
+            );
+            return {
+              id: pub.id,
+              title: pub.titulo,
+              content: det.data.contenido ?? "Sin contenido",
+              author: pub.autor,
+              createdAt: pub.fechaCreacion ?? new Date().toISOString(),
+              ejercicios: det.data.ejercicios ?? [],
+            };
+          })
+        );
+        setPublications(completas);
+      } catch (err) {
+        console.error("Error al cargar publicaciones del autor:", err);
+      }
+    };
+    if (token) fetchMisPublicaciones();
+  }, [token]);
+
+  // ---------- cargar publicaciones de la comunidad ----------
+  useEffect(() => {
+    const fetchComunidad = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/publicaciones/rutinas`
+        );
+        const todas = res.data;
+        const filtradas = todas.filter((p: any) => p.userId !== user?.id);
+        setOtrasPublicaciones(filtradas);
+      } catch (err) {
+        console.error("Error al cargar otras publicaciones:", err);
+      }
+    };
+    if (user) fetchComunidad();
+  }, [user]);
+
+  // ---------- handlers ----------
   const handleProgressSubmit = () => {
     if (newWeight && newGoal) {
       setProgress({
@@ -91,66 +155,64 @@ const Dashboard: React.FC = () => {
   };
 
   const handlePublicationSubmit = () => {
-    if (newTitle.trim() && newContent.trim()) {
-      const newPublication = {
-        id: publications.length + 1,
-        title: newTitle.trim(),
-        content: newContent.trim(),
-        author: user?.name ?? "Yo",
-        createdAt: new Date().toISOString().split("T")[0],
-      };
-      setPublications([newPublication, ...publications]);
-      setNewTitle("");
-      setNewContent("");
-      setShowPublicationForm(false);
-    }
+    if (!newTitle.trim() || !newContent.trim()) return;
+
+    const nueva = {
+      id: publications.length + 1,
+      title: newTitle.trim(),
+      content: newContent.trim(),
+      author: user?.name ?? "Yo",
+      createdAt: new Date().toISOString(),
+      ejercicios: [],
+    };
+    setPublications([nueva, ...publications]);
+    setNewTitle("");
+    setNewContent("");
+    setShowPublicationForm(false);
+    setPublicationType(null);
   };
 
-  if (loadingUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-700 text-lg">
-        Cargando datos del usuario...
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-red-600 text-lg">
-        No se pudo cargar la información del usuario.
-      </div>
-    );
-  }
-
+  // ---------- avatar ----------
   const avatar =
-    user.avatar ||
-    user.name
+    user?.avatar ||
+    user?.name
       ?.split(" ")
       .map((n: string) => n[0])
       .join("")
       .toUpperCase();
 
+  if (loadingUser)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Cargando…
+      </div>
+    );
+  if (!user)
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-600">
+        No se pudo cargar la información del usuario.
+      </div>
+    );
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-pink-50">
-      
-
-
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-cyan-50">
       <Navbar />
 
-      <div className="flex items-center justify-start px-4 py-4">
+      {/* botón hamburguesa */}
+      <div className="flex items-center px-4 py-4">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="text-gray-700 hover:text-violet-600 focus:outline-none p-2"
+          className="text-gray-700 hover:text-green-600 p-2"
         >
           <Menu className="w-5 h-5" />
         </button>
       </div>
-
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
+      {/* CONTENIDO */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* encabezado */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-gray-600">Bienvenido de vuelta, {user.name}</p>
         </div>
 
@@ -160,12 +222,12 @@ const Dashboard: React.FC = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-violet-500" />
-                  Tu Progreso
+                  <TrendingUp className="w-5 h-5 text-green-500" />
+                  Tu Progreso
                 </h2>
                 <button
                   onClick={() => setShowProgressForm(!showProgressForm)}
-                  className="flex items-center gap-2 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition-colors duration-200"
+                  className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
                 >
                   <Edit3 className="w-4 h-4" />
                   Actualizar
@@ -173,27 +235,27 @@ const Dashboard: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-gradient-to-r from-violet-500 to-violet-600 rounded-lg p-4 text-white">
+                <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
                   <div className="flex items-center gap-2 mb-2">
                     <Weight className="w-5 h-5" />
                     <span className="text-sm opacity-90">Peso Actual</span>
                   </div>
-                  <p className="text-2xl font-bold">{progress.currentWeight} kg</p>
+                  <p className="text-2xl font-bold">{progress.currentWeight} kg</p>
                 </div>
-                <div className="bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg p-4 text-white">
+                <div className="bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-lg p-4 text-white">
                   <div className="flex items-center gap-2 mb-2">
                     <Target className="w-5 h-5" />
                     <span className="text-sm opacity-90">Meta</span>
                   </div>
-                  <p className="text-2xl font-bold">{progress.goalWeight} kg</p>
+                  <p className="text-2xl font-bold">{progress.goalWeight} kg</p>
                 </div>
-                <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
+                <div className="bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg p-4 text-white">
                   <div className="flex items-center gap-2 mb-2">
                     <TrendingUp className="w-5 h-5" />
                     <span className="text-sm opacity-90">Por Perder</span>
                   </div>
                   <p className="text-2xl font-bold">
-                    {weightToLose.toFixed(1)} kg
+                    {weightToLose.toFixed(1)} kg
                   </p>
                 </div>
               </div>
@@ -202,11 +264,11 @@ const Dashboard: React.FC = () => {
               <div className="mb-4">
                 <div className="flex justify-between text-sm text-gray-600 mb-2">
                   <span>Progreso hacia tu meta</span>
-                  <span>{(100 - progressPercentage).toFixed(1)} % restante</span>
+                  <span>{(100 - progressPercentage).toFixed(1)} % restante</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
-                    className="bg-gradient-to-r from-violet-500 to-pink-500 h-3 rounded-full transition-all duration-500"
+                    className="bg-gradient-to-r from-green-500 to-cyan-500 h-3 rounded-full transition-all duration-500"
                     style={{ width: `${100 - progressPercentage}%` }}
                   />
                 </div>
@@ -234,7 +296,7 @@ const Dashboard: React.FC = () => {
                         value={newWeight}
                         onChange={(e) => setNewWeight(e.target.value)}
                         placeholder="70"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                       />
                     </div>
                     <div>
@@ -246,14 +308,14 @@ const Dashboard: React.FC = () => {
                         value={newGoal}
                         onChange={(e) => setNewGoal(e.target.value)}
                         placeholder="65"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                       />
                     </div>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={handleProgressSubmit}
-                      className="px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition-colors duration-200"
+                      className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
                     >
                       Guardar
                     </button>
@@ -269,94 +331,182 @@ const Dashboard: React.FC = () => {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                Publicaciones de la comunidad
+              </h2>
+
+              {otrasPublicaciones.length === 0 ? (
+                <p className="text-sm text-gray-500">No hay publicaciones disponibles.</p>
+              ) : (
+                <div className="space-y-4">
+                  {otrasPublicaciones.map((pub) => (
+                    <div
+                      key={pub.id_publicacion}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
+                    >
+                      <h3 className="font-semibold text-gray-900 mb-1">{pub.titulo}</h3>
+                      <p className="text-gray-600 text-sm mb-2">
+                        Rutina: {pub.nombreRutina} - Duración: {pub.duracion} día(s)
+                      </p>
+
+                      {pub.ejercicios && pub.ejercicios.length > 0 && (
+                        <div className="mt-2 space-y-2">
+                          <h4 className="text-sm font-semibold text-gray-800">Ejercicios:</h4>
+                          {(pub.ejercicios ?? []).map((ej: any) => (
+                            <div key={ej.id} className="text-sm border rounded p-2 bg-gray-50">
+                              <p className="font-semibold">{ej.nombre}</p>
+                              <p className="text-gray-600">{ej.descripcion}</p>
+                              <p className="text-gray-700">
+                                {ej.series} series, {ej.repeticiones} reps, {ej.pesoKg}kg, descanso {ej.descansoSegundos}s
+                              </p>
+                              {ej.imagenUrl && (
+                                <img
+                                  src={`${import.meta.env.VITE_API_URL}${ej.imagenUrl}`}
+                                  alt={ej.nombre}
+                                  className="w-32 mt-2 rounded"
+                                />
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+
+<div className="bg-white rounded-xl shadow-sm border p-6">
+              {/* título + botón nueva */}
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Mis Publicaciones
-                </h2>
+                <h2 className="text-xl font-semibold">Mis Publicaciones</h2>
                 <button
-                  onClick={() => setShowPublicationForm(!showPublicationForm)}
-                  className="flex items-center gap-2 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors duration-200"
+                  onClick={() => {
+                    setShowPublicationForm((prev) => !prev);
+                    setPublicationType(null);
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600"
                 >
                   <Plus className="w-4 h-4" />
                   Nueva
                 </button>
               </div>
 
-              {showPublicationForm && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <h3 className="font-semibold text-gray-900 mb-4">
-                    Nueva Publicación
-                  </h3>
+              {/* ---------- selector de tipo ---------- */}
+              {showPublicationForm && publicationType === null && (
+                <div className="mb-6 flex flex-col md:flex-row gap-3">
+                  <button
+                    onClick={() => navigate("/rutinas/crear")}
+                    className="flex-1 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                  >
+                    Publicar Rutina
+                  </button>
+                  <button
+                    onClick={() => navigate("/planes/crear")}
+                    className="flex-1 px-4 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition"
+                  >
+                    Plan Alimenticio
+                  </button>
+                  <button
+                    onClick={() => setPublicationType("normal")}
+                    className="flex-1 px-4 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                  >
+                    Publicación Normal
+                  </button>
+                </div>
+              )}
+
+              {/* ---------- formulario para publicación normal ---------- */}
+              {showPublicationForm && publicationType === "normal" && (
+                <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+                  <h3 className="font-semibold mb-4">Nueva Publicación</h3>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Título
-                      </label>
+                      <label className="block text-sm mb-1">Título</label>
                       <input
-                        type="text"
                         value={newTitle}
                         onChange={(e) => setNewTitle(e.target.value)}
-                        placeholder="Título de tu publicación"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                        className="w-full border px-3 py-2 rounded-lg"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Contenido
-                      </label>
+                      <label className="block text-sm mb-1">Contenido</label>
                       <textarea
+                        rows={4}
                         value={newContent}
                         onChange={(e) => setNewContent(e.target.value)}
-                        placeholder="Comparte tu experiencia, consejos o logros..."
-                        rows={4}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
+                        className="w-full border px-3 py-2 rounded-lg resize-none"
                       />
                     </div>
                   </div>
                   <div className="flex gap-2 mt-4">
                     <button
                       onClick={handlePublicationSubmit}
-                      className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors duration-200"
+                      className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600"
                     >
                       Publicar
                     </button>
                     <button
-                      onClick={() => setShowPublicationForm(false)}
-                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors duration-200"
+                      onClick={() => {
+                        setShowPublicationForm(false);
+                        setPublicationType(null);
+                      }}
+                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
                     >
                       Cancelar
                     </button>
                   </div>
                 </div>
               )}
-
               {/* Lista de publicaciones */}
               <div className="space-y-4">
-                {publications.map((pub) => (
-                  <div
-                    key={pub.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-gray-900">
-                        {pub.title}
-                      </h3>
-                      <span className="text-xs text-gray-500">
-                        {new Date(pub.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-gray-700 text-sm mb-3">{pub.content}</p>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <div className="flex items-center justify-center w-6 h-6 bg-violet-100 rounded-full">
-                        <span className="text-xs font-semibold text-violet-700">
-                          {avatar}
-                        </span>
-                      </div>
-                      <span>Por {pub.author}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+  {publications.map((pub) => (
+    <div
+      key={pub.id}
+      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
+    >
+      <div className="flex items-start justify-between mb-2">
+        <h3 className="font-semibold text-gray-900">{pub.title}</h3>
+        <span className="text-xs text-gray-500">
+          {new Date(pub.createdAt).toLocaleDateString()}
+        </span>
+      </div>
+      <p className="text-gray-700 text-sm mb-3">{pub.content}</p>
+      <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+        <div className="flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
+          <span className="text-xs font-semibold text-green-700">
+            {avatar}
+          </span>
+        </div>
+        <span>Por {pub.author}</span>
+      </div>
+
+      {(pub.ejercicios ?? []).length > 0 && (
+        <div className="mt-4 space-y-2">
+          <h4 className="text-sm font-semibold text-gray-800">Ejercicios:</h4>
+          {pub.ejercicios?.map((ej: any) => (
+            <div key={ej.id} className="text-sm border rounded p-2 bg-gray-50">
+              <p className="font-semibold">{ej.nombre}</p>
+              <p className="text-gray-600">{ej.descripcion}</p>
+              <p className="text-gray-700">
+                {ej.series} series, {ej.repeticiones} reps, {ej.pesoKg}kg, descanso {ej.descansoSegundos}s
+              </p>
+              {ej.imagenUrl && (
+                <img
+                  src={`${import.meta.env.VITE_API_URL}${ej.imagenUrl}`}
+                  alt={ej.nombre}
+                  className="w-32 mt-2 rounded"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  ))}
+</div>
+
             </div>
           </div>
 
@@ -364,7 +514,7 @@ const Dashboard: React.FC = () => {
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-violet-500 to-pink-500 rounded-full">
+                <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-green-500 to-cyan-500 rounded-full">
                   <span className="text-lg font-bold text-white">{avatar}</span>
                 </div>
                 <div>
@@ -395,8 +545,8 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Meta alcanzada</span>
-                  <span className="font-semibold text-green-600">
-                    {(100 - progressPercentage).toFixed(0)} %
+                  <span className="font-semibold text-teal-600">
+                    {(100 - progressPercentage).toFixed(0)} %
                   </span>
                 </div>
               </div>

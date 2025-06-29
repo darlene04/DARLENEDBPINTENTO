@@ -3,18 +3,33 @@ import { getAllRoutines } from "../service/authService";
 import { Dumbbell, Plus } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import { Menu } from "lucide-react";
 
 interface Routine {
-  id: number;
+  id_publicacion: number;
   titulo: string;
-  descripcion: string;
-  autor: string;
-  fecha: string;
+  contenido: string | null;
+  nombreRutina: string;
+  duracion: number;
+  frecuencia: string;
+  nivel: string | null;
+  userId: number;
+  ejercicios: {
+    id: number;
+    nombre: string;
+    descripcion: string;
+    series: number;
+    repeticiones: number;
+    descansoSegundos: number;
+    pesoKg: number;
+  }[];
 }
 
 const RoutinesPage: React.FC = () => {
   const [routines, setRoutines] = useState<Routine[]>([]);
   const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     getAllRoutines()
@@ -25,19 +40,30 @@ const RoutinesPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-cyan-50">
       <Navbar />
 
-      <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto bg-white rounded-xl shadow-md mt-8 border border-gray-200">
+      <div className="flex items-center justify-start px-4 py-4">
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="text-gray-700 hover:text-green-600 focus:outline-none p-2"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      </div>
+
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto bg-white/40 rounded-xl shadow-md mt-8 border border-gray-200">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-            <Dumbbell className="w-6 h-6 text-violet-600" />
+            <Dumbbell className="w-6 h-6 text-green-600" />
             Rutinas Disponibles
           </h1>
 
           <button
             onClick={() => navigate("/rutinas/crear")}
-            className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
           >
             <Plus className="w-4 h-4" />
             Nueva rutina
@@ -48,19 +74,59 @@ const RoutinesPage: React.FC = () => {
           <p className="text-gray-600">No hay rutinas disponibles por ahora.</p>
         ) : (
           <div className="space-y-4">
-            {routines.map((routine) => (
-              <div
-                key={routine.id}
-                className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition"
-              >
-                <h2 className="text-xl font-semibold text-gray-900 mb-1">{routine.titulo}</h2>
-                <p className="text-gray-700 text-sm mb-2">{routine.descripcion}</p>
-                <div className="text-xs text-gray-500 flex justify-between">
-                  <span>Autor: {routine.autor}</span>
-                  <span>{new Date(routine.fecha).toLocaleDateString()}</span>
+            {routines.map((routine) => {
+              // Función para obtener el color según la dificultad
+              const getDifficultyColor = (nivel: string | null) => {
+                switch (nivel?.toLowerCase()) {
+                  case 'principiante':
+                  case 'fácil':
+                  case 'beginner':
+                    return 'bg-green-500';
+                  case 'intermedio':
+                  case 'intermediate':
+                    return 'bg-cyan-500';
+                  case 'avanzado':
+                  case 'difícil':
+                  case 'advanced':
+                    return 'bg-teal-600';
+                  default:
+                    return 'bg-gray-500';
+                }
+              };
+
+              return (
+                <div
+                  key={routine.id_publicacion}
+                  onClick={() => navigate(`/rutinas/${routine.id_publicacion}`)}
+                  className="cursor-pointer bg-white/20 backdrop-blur-xl rounded-3xl shadow-2xl p-6 hover:shadow-3xl hover:bg-white/25 transition-all duration-300 border border-white/50"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getDifficultyColor(routine.nivel)}`}>
+                      {routine.nivel || 'Sin nivel'}
+                    </span>
+                    <button className="text-gray-400 hover:text-gray-600">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">{routine.titulo}</h2>
+                  <p className="text-gray-600 text-sm mb-4">{routine.contenido ?? "Sin descripción."}</p>
+                  
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center gap-4">
+                      <span className="flex items-center gap-1">
+                        <Dumbbell className="w-3 h-3" />
+                        {routine.ejercicios.length} ejercicios
+                      </span>
+                      <span>{routine.duracion} días</span>
+                      <span>{routine.frecuencia}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

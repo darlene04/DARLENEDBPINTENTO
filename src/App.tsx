@@ -12,6 +12,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import RoutinesPage from "./pages/RoutinesPage";
 import PerfilPage from "./pages/PerfilPage";
 import CrearRutinaPage from "./pages/Rutina/CrearRutinaPage";
+import DetalleRutinaPage from "./pages/Rutina/DetalleRutinaPage";
 
 function App() {
   const { token, isLoading } = useAuth();
@@ -54,6 +55,8 @@ function App() {
           path="/rutinas/crear"
           element={token ? <CrearRutinaPage /> : <Navigate to="/login" />}
         />
+
+        <Route path="/rutinas/:id" element={<DetalleRutinaPage />} />
 
 
         <Route path="*" element={<NotFoundPage />} />

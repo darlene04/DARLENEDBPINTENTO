@@ -51,12 +51,12 @@ const PerfilPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-cyan-50">
       <Navbar />
       <div className="flex items-center justify-start px-4 py-4">
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="text-gray-700 hover:text-violet-600 focus:outline-none p-2"
+          className="text-gray-700 hover:text-green-600 focus:outline-none p-2"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -64,15 +64,14 @@ const PerfilPage: React.FC = () => {
 
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto bg-white rounded-xl shadow-md mt-8 border border-gray-200">
+      <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto bg-white rounded-xl shadow-sm mt-8 border border-gray-200">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Mi Perfil</h1>
 
         <div className="flex items-center gap-6 mb-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-violet-500 to-pink-500 rounded-full">
-
-          <div className="text-lg font-bold text-white">
-            {avatar}
-          </div>
+          <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-green-500 to-cyan-500 rounded-full">
+            <div className="text-lg font-bold text-white">
+              {avatar}
+            </div>
           </div>
           <div>
             <p className="text-lg font-semibold text-gray-900">{user.name}</p>
@@ -100,10 +99,10 @@ const PerfilPage: React.FC = () => {
             />
           </div>
 
-        <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center gap-2">
+          <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center gap-2">
             <Edit3 className="w-4 h-4" />
-                Editar Perfil
-        </button>
+            Editar Perfil
+          </button>
         </div>
       </div>
     </div>
