@@ -18,7 +18,7 @@ interface Routine {
   ejercicios: {
     id: number;
     nombre: string;
-    descripcion: string;
+    descripcion: string | null;
     series: number;
     repeticiones: number;
     descansoSegundos: number;
@@ -75,7 +75,6 @@ const RoutinesPage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {routines.map((routine) => {
-              // Función para obtener el color según la dificultad
               const getDifficultyColor = (nivel: string | null) => {
                 switch (nivel?.toLowerCase()) {
                   case 'principiante':
@@ -112,7 +111,7 @@ const RoutinesPage: React.FC = () => {
                   </div>
 
                   <h2 className="text-xl font-bold text-gray-900 mb-2">{routine.titulo}</h2>
-                  <p className="text-gray-600 text-sm mb-4">{routine.contenido ?? "Sin descripción."}</p>
+                  <p className="text-gray-600 text-sm mb-4">{routine.descripcion ?? "Sin descripción."}</p>
                   
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <div className="flex items-center gap-4">
