@@ -221,18 +221,16 @@ const DetalleRutinaPage: React.FC = () => {
               </div>
             </div>
 
+{/* Sección de Comentarios */}
+<div className="bg-white rounded-2xl shadow-lg p-8">
+                        <ComentarioSection publicacionId={parseInt(id || "0")} />
+                        </div>
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Ejercicios de la Rutina</h2>
               <div className="space-y-6">
                 {rutina.ejercicios.map((ej, index) => (
                   <div key={ej.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                     <div className="flex flex-col lg:flex-row gap-6">
-                      {/* Sección de Comentarios */}
-                      <div className="bg-white rounded-2xl shadow-lg p-8">
-                        <ComentarioSection publicacionId={parseInt(id || "0")} />
-                        </div>
-
-                      
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
                           <span className="bg-green-100 text-green-700 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">

@@ -22,8 +22,11 @@ export default function ComentarioSection({ publicacionId }: Props) {
 
   const fetchComentarios = () => {
     axios
-      .get(`/comentarios/publicacion/${publicacionId}`)
-      .then((res) => setComentarios(res.data))
+      .get(`http://localhost:8090/api/comentarios/publicacion/${publicacionId}`)
+      .then((res) => {
+        console.log("Comentarios:", res.data);
+        setComentarios(res.data);
+      })
       .catch(() => setError("Error al cargar los comentarios"));
   };
 
@@ -33,18 +36,33 @@ export default function ComentarioSection({ publicacionId }: Props) {
 
   const handleAgregarComentario = () => {
     if (!nuevoComentario.trim()) return;
-
+  
     setLoading(true);
+  
     axios
-      .post(`/comentarios/crear?publicacionId=${publicacionId}`, {
-        contenido: nuevoComentario,
-      })
+      .post(
+        "http://localhost:8090/api/comentarios",
+        {
+          contenido: nuevoComentario,
+          publicacionId: publicacionId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
       .then(() => {
         setNuevoComentario("");
         fetchComentarios();
       })
+      .catch((err) => {
+        console.error("Error al agregar comentario:", err);
+        setError("No se pudo enviar el comentario.");
+      })
       .finally(() => setLoading(false));
   };
+  
 
   return (
     <div className="mt-6 p-4 rounded-lg border border-blue-500 bg-white shadow-md">
@@ -95,4 +113,6 @@ export default function ComentarioSection({ publicacionId }: Props) {
     </div>
   );
 }
+
+
 
