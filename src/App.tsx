@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 
+import CrearGrupoPage from "./pages/Grupo/CrearGrupoPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -15,6 +16,9 @@ import CrearRutinaPage from "./pages/Rutina/CrearRutinaPage";
 import DetalleRutinaPage from "./pages/Rutina/DetalleRutinaPage";
 import PlanesAlimentacionPage from "./pages/Alimento/PlanesAlimentacionPage";   
 import CrearPlanAlimenticioPage from "./pages/Alimento/CrearPlanAlimenticioPage";
+import MisGruposPage from "./pages/Grupo/MisGruposPage";
+import EditarGrupoPage from "./pages/Grupo/EditarGrupoPage";
+
 
 function App() {
   const { token, isLoading } = useAuth();
@@ -61,14 +65,29 @@ function App() {
         <Route path="/rutinas/:id" element={<DetalleRutinaPage />} />
 
         <Route
-        path="/planes-alimentacion"
-        element={token ? <PlanesAlimentacionPage /> : <Navigate to="/login" replace />}
+          path="/planes-alimentacion"
+          element={token ? <PlanesAlimentacionPage /> : <Navigate to="/login" replace />}
         />
         <Route
           path="/planes-alimentacion/crear"
           element={token ? <CrearPlanAlimenticioPage /> : <Navigate to="/login" replace />}
         />
-      <Route path="*" element={<NotFoundPage />} />
+        <Route 
+          path="*"
+          element={<NotFoundPage />}
+        />
+        <Route
+          path="/grupos/mis"
+          element={token ? <MisGruposPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/grupos/crear"
+          element={token ? <CrearGrupoPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/grupos/:grupoId/editar"
+          element={token ? <EditarGrupoPage /> : <Navigate to="/login" replace />}
+        />
     </Routes>
   </BrowserRouter>
   );
