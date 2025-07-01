@@ -25,7 +25,6 @@ export default function Navbar() {
             </div>
             <h1 className="text-xl font-bold text-gray-900 tracking-tight">VidaFit</h1>
           </div>
-          
 
           {/* Botones de acción */}
           {token && (

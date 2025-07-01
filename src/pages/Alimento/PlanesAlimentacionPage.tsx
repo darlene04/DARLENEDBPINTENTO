@@ -73,7 +73,6 @@ const PlanesAlimentacionPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTER_STATE);
 
-  // Fetch data with better error handling and retry logic
   const fetchPlanes = useCallback(async (retryCount = 0) => {
     try {
       setLoading(true);
@@ -82,7 +81,7 @@ const PlanesAlimentacionPage: React.FC = () => {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/publicaciones/planes`,
         {
-          timeout: 10000, // 10 second timeout
+          timeout: 10000,
           headers: {
             'Content-Type': 'application/json'
           }
@@ -98,7 +97,6 @@ const PlanesAlimentacionPage: React.FC = () => {
       console.error("Error al obtener planes:", err);
       
       if (retryCount < 2) {
-        // Retry up to 2 times with exponential backoff
         setTimeout(() => fetchPlanes(retryCount + 1), Math.pow(2, retryCount) * 1000);
         return;
       }
@@ -125,7 +123,6 @@ const PlanesAlimentacionPage: React.FC = () => {
     fetchPlanes();
   }, [fetchPlanes]);
 
-  // Optimized filter update function
   const updateFilter = useCallback(<K extends keyof FilterState>(
     key: K, 
     value: FilterState[K]
@@ -133,12 +130,10 @@ const PlanesAlimentacionPage: React.FC = () => {
     setFilters(prev => ({ ...prev, [key]: value }));
   }, []);
 
-  // Reset all filters
   const resetFilters = useCallback(() => {
     setFilters(INITIAL_FILTER_STATE);
   }, []);
 
-  // Memoized filter functions for better performance
   const filterFunctions = useMemo(() => ({
     searchMatch: (plan: PlanAlimentacion, term: string) => {
       const searchLower = term.toLowerCase();
@@ -160,7 +155,6 @@ const PlanesAlimentacionPage: React.FC = () => {
     }
   }), []);
 
-  // Optimized filtering and sorting
   const filteredPlanes = useMemo(() => {
     const { searchTerm, selectedDiet, selectedObjective, calorieRange, sortBy } = filters;
     
@@ -171,7 +165,6 @@ const PlanesAlimentacionPage: React.FC = () => {
       filterFunctions.caloriesMatch(plan, calorieRange)
     );
 
-    // Sorting with better performance
     const sortFunctions: Record<string, (a: PlanAlimentacion, b: PlanAlimentacion) => number> = {
       calorias: (a, b) => a.calorias - b.calorias,
       titulo: (a, b) => a.titulo.localeCompare(b.titulo, 'es', { sensitivity: 'base' }),
@@ -181,13 +174,11 @@ const PlanesAlimentacionPage: React.FC = () => {
     return filtered.sort(sortFunctions[sortBy] || sortFunctions.recientes);
   }, [planes, filters, filterFunctions]);
 
-  // Extract unique values with better performance
   const uniqueValues = useMemo(() => ({
     diets: [...new Set(planes.map(plan => plan.tipoDieta))].sort(),
     objectives: [...new Set(planes.map(plan => plan.objetivos))].sort()
   }), [planes]);
 
-  // Utility functions
   const getDietTypeColor = useCallback((tipoDieta: string): string => {
     return DIET_COLORS[tipoDieta.toLowerCase()] || 'bg-emerald-500';
   }, []);
@@ -203,7 +194,6 @@ const PlanesAlimentacionPage: React.FC = () => {
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   }, []);
 
-  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-lime-50 to-emerald-50">
@@ -292,7 +282,6 @@ const PlanesAlimentacionPage: React.FC = () => {
           </Link>
         </header>
 
-        {/* Filters - Only show if there are plans */}
         {planes.length > 0 && (
           <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
