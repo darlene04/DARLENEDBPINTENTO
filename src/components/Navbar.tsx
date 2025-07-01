@@ -1,6 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Edit3 } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 export default function Navbar() {
   const { token, setToken } = useAuth();

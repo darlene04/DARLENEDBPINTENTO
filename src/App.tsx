@@ -29,7 +29,6 @@ function App() {
   if (isLoading) {
     return <div className="text-center mt-10">Cargando sesión...</div>;
   }
-
   return (
     <BrowserRouter>
       <Routes>
