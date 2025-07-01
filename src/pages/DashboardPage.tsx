@@ -166,7 +166,6 @@ useEffect(() => {
 }, [token, user]);
 
 
-  /* --------- HANDLERS --------- */
   const handleProgressSubmit = () => {
     if (newWeight && newGoal) {
       setProgress({
@@ -215,7 +214,6 @@ useEffect(() => {
     }
   };
 
-  /* --------- AVATAR --------- */
   const avatar =
     user?.avatar ||
     user?.name
@@ -224,7 +222,6 @@ useEffect(() => {
       .join("")
       .toUpperCase();
 
-  /* --------- RENDER --------- */
   if (loadingUser)
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -264,12 +261,6 @@ useEffect(() => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* ======= COLUMNA IZQUIERDA (2/3) ======= */}
           <div className="lg:col-span-2 space-y-6">
-            
-            
-
-
-
-
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
@@ -380,16 +371,6 @@ useEffect(() => {
                 </div>
               )}
             </div>
-
-
-
-
-
-
-
-
-
-
 
             {/* -------- PUBLICACIONES DE LA COMUNIDAD -------- */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
