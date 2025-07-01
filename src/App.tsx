@@ -19,6 +19,9 @@ import CrearPlanAlimenticioPage from "./pages/Alimento/CrearPlanAlimenticioPage"
 import DetallePlanAlimentacion from "./pages/Alimento/DetallePlanAlimentacion";
 import MisGruposPage from "./pages/Grupo/MisGruposPage";
 import EditarGrupoPage from "./pages/Grupo/EditarGrupoPage";
+import GroupDetails from "./pages/Grupo/GroupDetails";
+import MisPublicaciones from "./pages/Publicaciones/MisPublicaciones";
+import PublicGroups from "./pages/Grupo/PublicGroups";
 
 function App() {
   const { token, isLoading } = useAuth();
@@ -40,6 +43,10 @@ function App() {
         <Route
           path="/dashboard"
           element={token ? <DashboardPage /> : <Navigate to="/login" replace />}
+        />
+         <Route
+          path="/grupos/publicos"
+          element={token ? <PublicGroups /> : <Navigate to="/login" replace />}
         />
         <Route
           path="/edit-profile"
@@ -78,7 +85,7 @@ function App() {
           element={<NotFoundPage />}
         />
         <Route
-          path="/grupos/mis"
+          path="/grupos/misgrupos"
           element={token ? <MisGruposPage /> : <Navigate to="/login" replace />}
         />
         <Route
@@ -89,6 +96,15 @@ function App() {
           path="/grupos/:grupoId/editar"
           element={token ? <EditarGrupoPage /> : <Navigate to="/login" replace />}
         />
+         <Route
+          path="/grupos/:grupoId"
+          element={token ? <GroupDetails /> : <Navigate to="/login" replace />}
+        />
+         <Route
+          path="/mis-publicaciones"
+          element={token ? <MisPublicaciones /> : <Navigate to="/login" replace />}
+        />
+
     </Routes>
   </BrowserRouter>
   );

@@ -49,6 +49,8 @@ const LoginInterface: React.FC = () => {
     }
   };
 
+  console.log("Token:", token);
+  
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-100 to-pink-100 px-4">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-gray-200">

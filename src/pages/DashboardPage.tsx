@@ -16,6 +16,7 @@ import { Menu } from "lucide-react";
 import { getUserInfo } from "../service/authService";
 import { useAuth } from "../context/AuthContext";
 
+/* --------------- MOCKS POR SI ACASO --------------- */
 const mockProgress = {
   currentWeight: 68,
   goalWeight: 65,
@@ -31,11 +32,13 @@ const mockPublications = [
     createdAt: "2024-06-25",
   },
 ];
+/* -------------------------------------------------- */
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
 
+  /* --------- ESTADOS --------- */
   const [user, setUser] = useState<any>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -52,10 +55,23 @@ const Dashboard: React.FC = () => {
       content: string;
       author: string;
       createdAt: string;
-      ejercicios?: { id: number; nombre: string; descripcion: string; series: number; repeticiones: number; pesoKg: number; descansoSegundos: number; imagenUrl?: string }[];
+      ejercicios?: {
+        id: number;
+        nombre: string;
+        descripcion: string;
+        series: number;
+        repeticiones: number;
+        pesoKg: number;
+        descansoSegundos: number;
+        imagenUrl?: string;
+      }[];
     }[]
   >(mockPublications);
+
   const [otrasPublicaciones, setOtrasPublicaciones] = useState<any[]>([]);
+  const [misGrupos, setMisGrupos] = useState<{ id: number; nombre: string }[]>(
+    []
+  );
 
   const [showPublicationForm, setShowPublicationForm] = useState(false);
   const [publicationType, setPublicationType] =
@@ -63,12 +79,14 @@ const Dashboard: React.FC = () => {
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
 
+  /* --------- CÁLCULOS --------- */
   const progressPercentage = Math.min(
     100,
     (progress.currentWeight / progress.goalWeight) * 100
   );
   const weightToLose = Math.max(0, progress.currentWeight - progress.goalWeight);
 
+  /* --------- EFECTOS --------- */
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -83,6 +101,7 @@ const Dashboard: React.FC = () => {
     fetchUser();
   }, [token]);
 
+  // Mis publicaciones
   useEffect(() => {
     const fetchMisPublicaciones = async () => {
       try {
@@ -94,7 +113,7 @@ const Dashboard: React.FC = () => {
         const completas = await Promise.all(
           base.map(async (pub: any) => {
             const det = await axios.get(
-              `${import.meta.env.VITE_API_URL}/api/publicaciones/rutinas/${pub.id}`
+              `${import.meta.env.VITE_API_URL}/api/publicaciones/${pub.id}`
             );
             return {
               id: pub.id,
@@ -114,6 +133,7 @@ const Dashboard: React.FC = () => {
     if (token) fetchMisPublicaciones();
   }, [token]);
 
+  // Publicaciones de la comunidad
   useEffect(() => {
     const fetchComunidad = async () => {
       try {
@@ -130,6 +150,28 @@ const Dashboard: React.FC = () => {
     if (user) fetchComunidad();
   }, [user]);
 
+  // Grupos del usuario
+  // Grupos del usuario
+useEffect(() => {
+  const fetchMisGrupos = async () => {
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/grupos/mis`,
+        {
+          params: { userId: user.id },               // ← envía su id
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setMisGrupos(data);                            // [{ id, nombre }, …]
+    } catch (err) {
+      console.error("Error al cargar grupos:", err);
+    }
+  };
+  if (token && user) fetchMisGrupos();               // espera a tener user.id
+}, [token, user]);
+
+
+  /* --------- HANDLERS --------- */
   const handleProgressSubmit = () => {
     if (newWeight && newGoal) {
       setProgress({
@@ -145,7 +187,6 @@ const Dashboard: React.FC = () => {
 
   const handlePublicationSubmit = () => {
     if (!newTitle.trim() || !newContent.trim()) return;
-
     const nueva = {
       id: publications.length + 1,
       title: newTitle.trim(),
@@ -161,6 +202,25 @@ const Dashboard: React.FC = () => {
     setPublicationType(null);
   };
 
+  // Compartir publicación en grupo
+  const compartirEnGrupo = async (publicacionId: number, grupoId: number) => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/publicacionescompartidas/${publicacionId}/compartir`,
+        null,
+        {
+          params: { grupoId },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("¡Publicación compartida correctamente! 🎉");
+    } catch (err) {
+      console.error("Error al compartir:", err);
+      alert("Ocurrió un error al compartir la publicación.");
+    }
+  };
+
+  /* --------- AVATAR --------- */
   const avatar =
     user?.avatar ||
     user?.name
@@ -169,6 +229,7 @@ const Dashboard: React.FC = () => {
       .join("")
       .toUpperCase();
 
+  /* --------- RENDER --------- */
   if (loadingUser)
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -181,11 +242,12 @@ const Dashboard: React.FC = () => {
         No se pudo cargar la información del usuario.
       </div>
     );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-cyan-50">
       <Navbar />
 
-      
+      {/* Botón hamburguesa */}
       <div className="flex items-center px-4 py-4">
         <button
           onClick={() => setSidebarOpen(true)}
@@ -196,18 +258,24 @@ const Dashboard: React.FC = () => {
       </div>
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      
+      {/* CONTENIDO PRINCIPAL */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-       
+        {/* Encabezado */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-gray-600">Bienvenido de vuelta, {user.name}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* ======= COLUMNA IZQUIERDA (2/3) ======= */}
           <div className="lg:col-span-2 space-y-6">
             
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            
+
+
+
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-green-500" />
@@ -318,13 +386,26 @@ const Dashboard: React.FC = () => {
               )}
             </div>
 
+
+
+
+
+
+
+
+
+
+
+            {/* -------- PUBLICACIONES DE LA COMUNIDAD -------- */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">
                 Publicaciones de la comunidad
               </h2>
 
               {otrasPublicaciones.length === 0 ? (
-                <p className="text-sm text-gray-500">No hay publicaciones disponibles.</p>
+                <p className="text-sm text-gray-500">
+                  No hay publicaciones disponibles.
+                </p>
               ) : (
                 <div className="space-y-4">
                   {otrasPublicaciones.map((pub) => (
@@ -332,20 +413,30 @@ const Dashboard: React.FC = () => {
                       key={pub.id_publicacion}
                       className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
                     >
-                      <h3 className="font-semibold text-gray-900 mb-1">{pub.titulo}</h3>
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        {pub.titulo}
+                      </h3>
                       <p className="text-gray-600 text-sm mb-2">
-                        Rutina: {pub.nombreRutina} - Duración: {pub.duracion} día(s)
+                        Rutina: {pub.nombreRutina} – Duración: {pub.duracion}{" "}
+                        día(s)
                       </p>
 
+                      {/* EJERCICIOS */}
                       {pub.ejercicios && pub.ejercicios.length > 0 && (
                         <div className="mt-2 space-y-2">
-                          <h4 className="text-sm font-semibold text-gray-800">Ejercicios:</h4>
+                          <h4 className="text-sm font-semibold text-gray-800">
+                            Ejercicios:
+                          </h4>
                           {(pub.ejercicios ?? []).map((ej: any) => (
-                            <div key={ej.id} className="text-sm border rounded p-2 bg-gray-50">
+                            <div
+                              key={ej.id}
+                              className="text-sm border rounded p-2 bg-gray-50"
+                            >
                               <p className="font-semibold">{ej.nombre}</p>
                               <p className="text-gray-600">{ej.descripcion}</p>
                               <p className="text-gray-700">
-                                {ej.series} series, {ej.repeticiones} reps, {ej.pesoKg}kg, descanso {ej.descansoSegundos}s
+                                {ej.series} series, {ej.repeticiones} reps,{" "}
+                                {ej.pesoKg}kg, descanso {ej.descansoSegundos}s
                               </p>
                               {ej.imagenUrl && (
                                 <img
@@ -358,15 +449,48 @@ const Dashboard: React.FC = () => {
                           ))}
                         </div>
                       )}
+
+                      {/* -------- COMPARTIR EN GRUPO -------- */}
+                      <div className="mt-4 flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+                        <select
+                          className="border rounded px-2 py-1 text-sm"
+                          defaultValue=""
+                          id={`grupo-select-${pub.id_publicacion}`}
+                        >
+                          <option value="" disabled>
+                            Selecciona grupo
+                          </option>
+                          {misGrupos.map((g) => (
+                            <option key={g.id} value={g.id}>
+                              {g.nombre}
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          className="px-3 py-1 bg-cyan-500 text-white rounded hover:bg-cyan-600 text-sm"
+                          onClick={() => {
+                            const select = document.getElementById(
+                              `grupo-select-${pub.id_publicacion}`
+                            ) as HTMLSelectElement;
+                            const grupoId = Number(select.value);
+                            if (!grupoId) {
+                              alert("Elige un grupo primero.");
+                              return;
+                            }
+                            compartirEnGrupo(pub.id_publicacion, grupoId);
+                          }}
+                        >
+                          Compartir en grupo
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
             </div>
 
-
-<div className="bg-white rounded-xl shadow-sm border p-6">
-             
+            <div className="bg-white rounded-xl shadow-sm border p-6">     
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold">Mis Publicaciones</h2>
                 <button
@@ -447,7 +571,7 @@ const Dashboard: React.FC = () => {
                 </div>
               )}
               <div className="space-y-4">
-                {publications.map((pub) => (
+              {publications.slice(0, 4).map((pub) => (
                   <div
                     key={pub.id}
                     className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
@@ -491,6 +615,17 @@ const Dashboard: React.FC = () => {
                     )}
                   </div>
                 ))}
+                {publications.length > 4 && (
+  <div className="flex justify-center mt-4">
+    <button
+      onClick={() => navigate("/mis-publicaciones")}
+      className="text-cyan-600 font-semibold hover:underline"
+    >
+      Ver más publicaciones
+    </button>
+  </div>
+)}
+
               </div>
             </div>
           </div>

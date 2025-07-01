@@ -31,14 +31,6 @@ export default function Navbar() {
           {token && (
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => navigate("/edit-profile")}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm font-medium"
-              >
-                <Edit3 className="w-4 h-4" />
-                Editar perfil
-              </button>
-
-              <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-sm font-medium"
               >

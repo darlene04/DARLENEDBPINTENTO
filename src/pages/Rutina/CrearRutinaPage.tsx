@@ -119,7 +119,6 @@ const CrearRutinaPage: React.FC = () => {
   };
   
 
-  // ---------------- Vista ----------------
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-cyan-50">
       <Navbar />

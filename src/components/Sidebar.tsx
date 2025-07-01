@@ -1,4 +1,4 @@
-import { X, Home, User, LogOut, Dumbbell,Utensils } from "lucide-react"; // Asegúrate de importar Dumbbell
+import { X, Home, User, LogOut, Dumbbell,Utensils, Group } from "lucide-react"; // Asegúrate de importar Dumbbell
 import { Link } from "react-router-dom";
 
 
@@ -31,7 +31,10 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
           <Utensils className="w-4 h-4" />
           Planes Alimenticios
           </Link>
-
+        <Link to="/grupos/publicos" className="flex items-center gap-2 text-gray-700 hover:text-violet-600">
+          <Group className="w-4 h-4" />
+          Grupos
+        </Link>
         <Link to="/perfil" className="flex items-center gap-2 text-gray-700 hover:text-violet-600">
           <User className="w-4 h-4" />
           Perfil
