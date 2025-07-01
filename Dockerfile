@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Exponer el puerto de desarrollo de Vite
-EXPOSE 5173
+EXPOSE 3000
 
 # Comando por defecto (modo desarrollo)
 CMD ["npm", "run", "dev"]
