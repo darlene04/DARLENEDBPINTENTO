@@ -207,7 +207,6 @@ const PlanesAlimentacionPage: React.FC = () => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-lime-50 to-emerald-50">

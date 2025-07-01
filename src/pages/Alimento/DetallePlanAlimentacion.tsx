@@ -179,8 +179,7 @@ const DetallePlanAlimentacion: React.FC = () => {
                     <ComentarioSection publicacionId={parseInt(id || "0")} />
                 </div>
           </div>
-
-
+          
           <div className="space-y-8">
             {recetasRelacionadas.length > 0 && (
               <div className="bg-white rounded-2xl shadow-lg p-6">
