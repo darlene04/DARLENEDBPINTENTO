@@ -42,7 +42,7 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
         <button
           onClick={() => {
             localStorage.removeItem("token");
-            window.location.href = "/auth/login";
+            window.location.href = "/login";
           }}
           className="flex items-center gap-2 text-gray-700 hover:text-red-600"
         >
