@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+const API_URL = import.meta.env.API_URL;
 
 interface Comentario {
   id: number;
@@ -22,7 +23,7 @@ export default function ComentarioSection({ publicacionId }: Props) {
 
   const fetchComentarios = () => {
     axios
-      .get(`http://localhost:8090/api/comentarios/publicacion/${publicacionId}`)
+      .get(`${API_URL}/api/comentarios/publicacion/${publicacionId}`)
       .then((res) => {
         console.log("Comentarios:", res.data);
         setComentarios(res.data);
@@ -39,19 +40,18 @@ export default function ComentarioSection({ publicacionId }: Props) {
   
     setLoading(true);
   
-    axios
-      .post(
-        "http://localhost:8090/api/comentarios",
-        {
-          contenido: nuevoComentario,
-          publicacionId: publicacionId,
+    axios.post(
+      `${API_URL}/api/comentarios`,
+      {
+        contenido: nuevoComentario,
+        publicacionId: publicacionId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      )
+      }
+    )    
       .then(() => {
         setNuevoComentario("");
         fetchComentarios();

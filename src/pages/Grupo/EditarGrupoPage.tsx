@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+const API_URL = import.meta.env.API_URL;
 
 interface GrupoData {
   nombre: string;
@@ -19,7 +20,7 @@ const EditarGrupoPage: React.FC = () => {
 
   const fetchGrupo = async () => {
     try {
-      const response = await axios.get(`http://localhost:8090/grupos`);
+      const response = await axios.get(`${API_URL}/grupos`);
       const grupoEncontrado = response.data.find((g: any) => g.id === parseInt(grupoId!));
       if (grupoEncontrado) {
         setGrupo({
@@ -51,7 +52,7 @@ const EditarGrupoPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8090/grupos/${grupoId}/editar`, grupo);
+      await axios.put(`${API_URL}/grupos/${grupoId}/editar`, grupo);
       alert("Grupo actualizado correctamente.");
       navigate("/grupos");
     } catch (error) {

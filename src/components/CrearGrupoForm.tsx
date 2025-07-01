@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+const API_URL = import.meta.env.API_URL;
 
 interface CrearGrupoFormProps {
   onSuccess?: () => void;
@@ -20,7 +21,7 @@ const CrearGrupoForm: React.FC<CrearGrupoFormProps> = ({ onSuccess }) => {
     }
 
     try {
-      await axios.post(`http://localhost:8090/grupos/crear?adminId=${adminId}`, {
+      await axios.post(`${API_URL}/grupos/crear?adminId=${adminId}`, {
         nombre,
         descripcion,
         tipo,

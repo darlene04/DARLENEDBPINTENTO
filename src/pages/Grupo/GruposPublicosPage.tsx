@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import GrupoCard from "../../components/GrupoCard";
+const API_URL = import.meta.env.API_URL;
 
 interface GrupoDTO {
   id: number;
@@ -17,7 +18,7 @@ const GruposPublicosPage: React.FC = () => {
 
   const fetchGrupos = async () => {
     try {
-      const response = await axios.get("http://localhost:8090/grupos/publicos");
+      const response = await axios.get(`${API_URL}/grupos/publicos`);
       setGrupos(response.data);
     } catch (err) {
       setError("Error al obtener los grupos públicos");

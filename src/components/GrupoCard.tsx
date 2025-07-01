@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+const API_URL = import.meta.env.API_URL;
 
 interface GrupoCardProps {
   id: number;
@@ -19,7 +20,7 @@ const GrupoCard: React.FC<GrupoCardProps> = ({ id, nombre, descripcion, esPublic
     }
 
     try {
-      await axios.post(`http://localhost:8090/grupos/${id}/unirse?userId=${userId}`);
+      await axios.post(`${API_URL}/grupos/${id}/unirse?userId=${userId}`);
       alert("Te has unido al grupo exitosamente.");
       onSuccess?.();
     } catch (error) {

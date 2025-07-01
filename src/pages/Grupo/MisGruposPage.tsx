@@ -14,6 +14,7 @@ import { useAuth } from "../../context/AuthContext";
 import { getUserInfo } from "../../service/authService";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
+const API_URL = import.meta.env.API_URL;
 
 interface Miembro {
   id: number;
@@ -51,7 +52,7 @@ const MisGruposPage: React.FC = () => {
         const userData = await getUserInfo();
         setUser(userData.data);
 
-        const response = await axios.get("http://localhost:8090/grupos", {
+        const response = await axios.get(`${API_URL}/grupos`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
