@@ -1,19 +1,20 @@
-# Usar una imagen base de Node.js
+# Imagen base de Node.js
 FROM node:18
 
-# Establecer el directorio de trabajo
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar el archivo package.json e instalar las dependencias
+# Copiar dependencias
 COPY package*.json ./
 
+# Instalar dependencias
 RUN npm install
 
-# Copiar el código fuente de la aplicación
+# Copiar el resto del código
 COPY . .
 
-# Exponer el puerto 3000
+# Exponer el puerto de desarrollo de Vite
 EXPOSE 5173
 
-# Comando para ejecutar la aplicación
-CMD ["node", "app.js"]
+# Comando por defecto (modo desarrollo)
+CMD ["npm", "run", "dev"]
