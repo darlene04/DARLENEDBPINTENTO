@@ -16,7 +16,6 @@ import { Menu } from "lucide-react";
 import { getUserInfo } from "../service/authService";
 import { useAuth } from "../context/AuthContext";
 
-/* --------------- MOCKS POR SI ACASO --------------- */
 const mockProgress = {
   currentWeight: 68,
   goalWeight: 65,
@@ -32,13 +31,11 @@ const mockPublications = [
     createdAt: "2024-06-25",
   },
 ];
-/* -------------------------------------------------- */
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
 
-  /* --------- ESTADOS --------- */
   const [user, setUser] = useState<any>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -79,14 +76,12 @@ const Dashboard: React.FC = () => {
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
 
-  /* --------- CÁLCULOS --------- */
   const progressPercentage = Math.min(
     100,
     (progress.currentWeight / progress.goalWeight) * 100
   );
   const weightToLose = Math.max(0, progress.currentWeight - progress.goalWeight);
 
-  /* --------- EFECTOS --------- */
   useEffect(() => {
     const fetchUser = async () => {
       try {
