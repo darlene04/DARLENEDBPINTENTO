@@ -14,7 +14,6 @@ export function createPublication(token: string, title: string, content: string)
   );
 }
 
-// ✅ AÑADE ESTA FUNCIÓN PARA QUE EL IMPORT FUNCIONE
 export function getPublications(token: string) {
   return axios.get(`${API}/api/publications`, {
     headers: {
