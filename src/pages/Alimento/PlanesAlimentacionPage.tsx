@@ -77,7 +77,6 @@ const PlanesAlimentacionPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/publicaciones/planes`,
         {
@@ -87,7 +86,6 @@ const PlanesAlimentacionPage: React.FC = () => {
           }
         }
       );
-      
       if (Array.isArray(response.data)) {
         setPlanes(response.data);
       } else {
@@ -362,7 +360,6 @@ const PlanesAlimentacionPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Filter Summary */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-gray-600">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4" />
