@@ -35,15 +35,18 @@ const RoutinesPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   
   useEffect(() => {
-    getAllRoutines(page)
+    getAllRoutines()
       .then((res) => {
-        setRoutines(res.data.content); // <- `content` viene del Page<T>
-        setTotalPages(res.data.totalPages);
+        const data = res.data.map((r: any) => ({
+          ...r,
+          ejercicios: r.ejercicios || [],
+        }));
+        setRoutines(data);
       })
       .catch((err) => {
         console.error("Error al cargar rutinas:", err);
       });
-  }, [page]);
+  }, []);
   
 
   return (
