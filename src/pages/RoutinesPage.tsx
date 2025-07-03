@@ -124,8 +124,8 @@ const RoutinesPage: React.FC = () => {
                     <div className="flex items-center gap-4">
                       <span className="flex items-center gap-1">
                         <Dumbbell className="w-3 h-3" />
-                        {routine.ejercicios.length} ejercicios
-                      </span>
+                        {routine.ejercicios?.length ?? 0} ejercicios
+                        </span>
                       <span>{routine.duracion} días</span>
                       <span>{routine.frecuencia}</span>
                     </div>
