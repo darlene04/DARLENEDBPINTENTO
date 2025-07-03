@@ -31,14 +31,20 @@ const RoutinesPage: React.FC = () => {
   const [routines, setRoutines] = useState<Routine[]>([]);
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  
   useEffect(() => {
-    getAllRoutines()
-      .then((res) => setRoutines(res.data))
+    getAllRoutines(page)
+      .then((res) => {
+        setRoutines(res.data.content); // <- `content` viene del Page<T>
+        setTotalPages(res.data.totalPages);
+      })
       .catch((err) => {
         console.error("Error al cargar rutinas:", err);
       });
-  }, []);
+  }, [page]);
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-cyan-50">
@@ -130,6 +136,28 @@ const RoutinesPage: React.FC = () => {
           </div>
         )}
       </div>
+      <div className="mt-6 flex justify-center gap-4">
+  <button
+    disabled={page === 0}
+    onClick={() => setPage((p) => p - 1)}
+    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-300"
+  >
+    Anterior
+  </button>
+
+  <span className="self-center text-gray-700 font-medium">
+    Página {page + 1} de {totalPages}
+  </span>
+
+  <button
+    disabled={page + 1 >= totalPages}
+    onClick={() => setPage((p) => p + 1)}
+    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-300"
+  >
+    Siguiente
+  </button>
+</div>
+
     </div>
   );
 };

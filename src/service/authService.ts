@@ -19,8 +19,9 @@ export function getUserInfo() {
   });
 }
 
-export function getAllRoutines() {
-  return axios.get(`${API}/api/publicaciones/rutinas`);
+export function getAllRoutines(page = 0, size = 6) {
+  return axios.get(`${import.meta.env.VITE_API_URL}/api/publicaciones/rutinas`, {
+    params: { page, size },
+  });
 }
-
 
