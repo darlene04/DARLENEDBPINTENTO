@@ -22,6 +22,8 @@ import EditarGrupoPage from "./pages/Grupo/EditarGrupoPage";
 import GroupDetails from "./pages/Grupo/GroupDetails";
 import MisPublicaciones from "./pages/Publicaciones/MisPublicaciones";
 import PublicGroups from "./pages/Grupo/PublicGroups";
+import ProgresoPage from "./pages/Progreso/ProgresoPage";
+import MetaPage from "./pages/Metas/MetaPage";
 
 function App() {
   const { token, isLoading } = useAuth();
@@ -102,6 +104,14 @@ function App() {
          <Route
           path="/mis-publicaciones"
           element={token ? <MisPublicaciones /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/progreso"
+          element={token ? <ProgresoPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/metas"
+          element={token ? <MetaPage /> : <Navigate to="/login" replace />}
         />
 
     </Routes>
